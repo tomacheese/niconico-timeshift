@@ -1,0 +1,23 @@
+name: hadolint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+        directory: [register, downloader]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - uses: hadolint/hadolint-action@v2.0.0
+        with:
+          dockerfile: ${{ matrix.directory }}/Dockerfile

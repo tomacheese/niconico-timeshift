@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  register:
+    build: ./register
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data
+      - type: bind
+        source: ./config.json
+        target: /app/config.json
+    restart: always
