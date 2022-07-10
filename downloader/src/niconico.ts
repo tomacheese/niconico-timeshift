@@ -132,6 +132,13 @@ export default class NicoNico {
     return response.status === 200
   }
 
+  public async isLogined(): Promise<boolean> {
+    const response = await this.$axios.get('https://www.nicovideo.jp/my/', {
+      maxRedirects: 0,
+    })
+    return response.status === 200
+  }
+
   /**
    * タイムシフト一覧を取得する
    *

@@ -13,7 +13,7 @@ interface Config {
 async function main() {
   console.log('main()')
   const config: Config = JSON.parse(fs.readFileSync('/app/config.json', 'utf8'))
-  const niconico = await niconicoClass.login(config.username, config.password)
+  let niconico = await niconicoClass.login(config.username, config.password)
 
   // 予約済み一覧を取得
   const reserveds = await niconico.getTimeshiftReservation()
@@ -53,6 +53,11 @@ async function main() {
     // conf.dbがあったら削除
     if (fs.existsSync(path.join(outputDir, 'conf.db'))) {
       fs.unlinkSync(path.join(outputDir, 'conf.db'))
+    }
+
+    if (!(await niconico.isLogined())) {
+      console.log('relogin...')
+      niconico = await niconicoClass.login(config.username, config.password)
     }
 
     // livedlを使ってダウンロード
