@@ -20,7 +20,7 @@ export async function execLiveDL(
   const livedlArgs = [
     '-no-chdir', // 起動する時chdirしない(conf.dbは起動したディレクトリに作成されます)
     '-nico', // ニコニコ生放送の録画
-    '--nico-session', // Cookie[user_session]を指定する
+    '-nico-session', // Cookie[user_session]を指定する
     userSession,
     '-nico-login-only=on', // 必ずログイン状態で録画する
     '-nico-fast-ts', // 倍速タイムシフト録画を行う(新配信タイムシフト)
