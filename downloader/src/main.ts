@@ -15,6 +15,10 @@ async function main() {
   const config: Config = JSON.parse(fs.readFileSync('/app/config.json', 'utf8'))
   let niconico = await niconicoClass.login(config.username, config.password)
 
+  if (!(await niconico.isLogined())) {
+    throw new Error('login failed')
+  }
+
   // 予約済み一覧を取得
   const reserveds = await niconico.getTimeshiftReservation()
   console.log('reserved: ' + reserveds.length + ' / 10')

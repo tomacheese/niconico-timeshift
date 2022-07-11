@@ -126,8 +126,16 @@ export default class NicoNico {
           cookie: `user_session=${userSession}`,
         },
         validateStatus: () => true,
+        maxRedirects: 0,
       })
       .get('https://www.nicovideo.jp/my/')
+    return response.status === 200
+  }
+
+  public async isLogined(): Promise<boolean> {
+    const response = await this.$axios.get('https://www.nicovideo.jp/my/', {
+      maxRedirects: 0,
+    })
     return response.status === 200
   }
 
