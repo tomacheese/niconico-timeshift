@@ -90,6 +90,7 @@ async function main() {
         continue
       }
       // ダウンロード済みタイムシフトを削除
+      // TODO 必要に応じて数日経過後のみ削除するようにする
       if (isDownloaded(item)) {
         await niconico.deleteTimeshift(item.programId)
         continue
@@ -182,9 +183,12 @@ async function isExistsAfterReserve(
   return false
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function isDownloaded(_item: SearchLiveItem) {
-  return false // TODO
+function isDownloaded(item: SearchLiveItem) {
+  const filePath = '/data/downloaded.json'
+  const downloaded = fs.existsSync(filePath)
+    ? JSON.parse(fs.readFileSync(filePath, 'utf8'))
+    : []
+  return downloaded.includes(item.programId)
 }
 
 async function getSearchLives(
