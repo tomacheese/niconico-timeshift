@@ -75,7 +75,10 @@ async function main() {
   console.log('preReserved: ' + preReserved.length)
 
   // 予約可能数を計算
-  const reservableCount = 10 - reserveds.length - deletedCount
+  let reservableCount = 10 - reserveds.length - deletedCount
+  console.log('reservableCount: ' + reservableCount)
+  console.log('reserved: ' + reserveds.length)
+  console.log('deleted: ' + deletedCount)
 
   // 予約処理
   // 予約可能枠がある場合はそのまま予約、枠がない場合は削除可能なものを探索し削除・予約
@@ -148,6 +151,7 @@ async function main() {
         },
       })
       .catch(() => null)
+    reservableCount--
   }
 }
 
