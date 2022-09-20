@@ -33,6 +33,7 @@ jobs:
 
       - name: 📃 Check package.json definition
         id: package-json
+        working-directory: ${{ matrix.directory }}
         run: |
           compile=$(cat package.json | jq '.scripts | has("compile")')
           build=$(cat package.json | jq '.scripts | has("build")')
