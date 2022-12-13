@@ -3,7 +3,7 @@ import niconicoClass from './niconico'
 import fs from 'fs'
 import { execLiveDL } from './lib/livedl'
 import { SearchLiveItem } from './model/search-live-result'
-import path from 'path'
+import path, { join } from 'path'
 
 interface Config {
   username: string
@@ -80,6 +80,9 @@ async function main() {
     console.log('downloaded: ' + programId)
     console.log('tryCount: ' + result.tryCount)
 
+    const filepath = getFilePath(outputDir, programId)
+    const filesize = getFileSize(filepath)
+
     let details: SearchLiveItem | null = null
     if (fs.existsSync(outputDir + 'details.json')) {
       details = JSON.parse(fs.readFileSync(outputDir + 'details.json', 'utf8'))
@@ -96,6 +99,27 @@ async function main() {
             {
               name: 'チャンネル',
               value: username,
+              inline: true,
+            },
+            {
+              name: 'ID',
+              value: programId,
+              inline: true,
+            },
+            {
+              name: '\u200B',
+              value: '\u200B',
+              inline: false,
+            },
+            {
+              name: 'ファイルサイズ',
+              value: getHumanReadableSize(filesize),
+              inline: true,
+            },
+            {
+              name: '試行回数',
+              value: result.tryCount?.toString(),
+              inline: true,
             },
           ],
           thumbnail: {
@@ -108,6 +132,30 @@ async function main() {
 
     addDownloaded(programId)
   }
+}
+
+function getFilePath(outputDir: string, programId: string) {
+  // lv339269501(TS).sqlite3
+  // lv339269587(TS).sqlite3
+  return join(
+    outputDir,
+    programId + '(TS).sqlite3'
+  )
+}
+
+function getFileSize(filepath: string) {
+  const stats = fs.statSync(filepath)
+  return stats.size
+}
+
+function getHumanReadableSize(size: number) {
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  let unit = 0
+  while (size >= 1024) {
+    size /= 1024
+    unit++
+  }
+  return size.toFixed(2) + units[unit]
 }
 
 function addDownloaded(programId: string) {
