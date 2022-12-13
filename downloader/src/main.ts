@@ -137,10 +137,7 @@ async function main() {
 function getFilePath(outputDir: string, programId: string) {
   // lv339269501(TS).sqlite3
   // lv339269587(TS).sqlite3
-  return join(
-    outputDir,
-    programId + '(TS).sqlite3'
-  )
+  return join(outputDir, programId + '(TS).sqlite3')
 }
 
 function getFileSize(filepath: string) {
