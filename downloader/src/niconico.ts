@@ -25,27 +25,19 @@ export default class NicoNico {
     GET_TS_RESERVATIONS:
       'https://live.nicovideo.jp/embed/timeshift-reservations',
     /**
+     * タイムシフト視聴権利処理エンドポイント？ (PATCH)
+     *
+     * URL内に対象ライブ ID を指定
+     */
+    ACCEPT_WATCH_TS:
+      'https://live2.nicovideo.jp/api/v2/programs/#{programId}/timeshift/reservation',
+    /**
      * タイムシフト削除エンドポイント (DELETE)
      *
      * @param programId プログラムID
      */
     DELETE_TS:
       'https://live2.nicovideo.jp/api/v2/timeshift/reservations?programIds=#{programId}',
-    /**
-     * タイムシフト視聴権利処理の確認ポップアップエンドポイント (GET)
-     *
-     * @param programId プログラムID
-     */
-    CONFIRM_WATCH:
-      'https://live.nicovideo.jp/api/watchingreservation?mode=confirm_watch_my&vid=#{programId}&next_url&analytic',
-    /**
-     * タイムシフト視聴権利処理エンドポイント (POST)
-     *
-     * @param programId プログラムID
-     * @param token 視聴権利処理トークン
-     */
-    USE_ACCEPT_WATCH:
-      'http://live.nicovideo.jp/api/watchingreservation?accept=true&mode=use&vid=#{programId}&token=#{token}',
   }
 
   // eslint-disable-next-line no-useless-constructor
@@ -177,38 +169,22 @@ export default class NicoNico {
   }
 
   public async useAcceptWatch(programId: string): Promise<void> {
-    const token = await this.getUseAcceptToken(programId)
-    if (!token) {
-      return // already accepted
-    }
-    const response = await this.$axios.post(
-      NicoNico.ENDPOINTS.USE_ACCEPT_WATCH.replace(
-        '#{programId}',
-        programId
-      ).replace('#{token}', token)
+    // いまいちわからんけど、PATCHでリクエストを出せば良いっぽい (#75)
+    const response = await this.$axios.patch(
+      NicoNico.ENDPOINTS.ACCEPT_WATCH_TS.replace('#{programId}', programId)
     )
+
     if (response.status !== 200) {
       throw new Error(
         'useAcceptWatch failed (resCode: ' + response.status + ')'
       )
     }
-  }
 
-  private async getUseAcceptToken(programId: string): Promise<string | null> {
-    const response = await this.$axios.get(
-      NicoNico.ENDPOINTS.CONFIRM_WATCH.replace('#{programId}', programId)
-    )
-    if (response.status !== 200) {
+    // {"meta":{"status":200}}
+    if (response.data.meta.status !== 200) {
       throw new Error(
-        'getUseAcceptToken failed (resCode: ' + response.status + ')'
+        'useAcceptWatch failed (resCode: ' + response.data.meta.status + ')'
       )
     }
-    const html = response.data
-    const regex = /Nicolive\.TimeshiftActions\.confirmToWatch\('.+', '(.+)'\);/
-    const match = html.match(regex)
-    if (!match) {
-      return null
-    }
-    return match[1]
   }
 }
