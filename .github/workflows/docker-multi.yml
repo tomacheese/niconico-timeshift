@@ -30,8 +30,8 @@ jobs:
     strategy:
       matrix:
         target:
-          - '{ imageName: "tomacheese/niconico-timeshift-register", directory: "register" }'
-          - '{ imageName: "tomacheese/niconico-timeshift-downloader", directory: "downloader" }'
+          - '{ imageName: "ghcr.io/tomacheese/niconico-timeshift-register", directory: "register" }'
+          - '{ imageName: "ghcr.io/tomacheese/niconico-timeshift-downloader", directory: "downloader" }'
 
     steps:
       - name: Check out the repo
