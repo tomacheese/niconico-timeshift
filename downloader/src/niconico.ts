@@ -168,23 +168,27 @@ export default class NicoNico {
     }
   }
 
-  public async useAcceptWatch(programId: string): Promise<void> {
+  public async useAcceptWatch(programId: string): Promise<boolean> {
     // いまいちわからんけど、PATCHでリクエストを出せば良いっぽい (#75)
     const response = await this.$axios.patch(
-      NicoNico.ENDPOINTS.ACCEPT_WATCH_TS.replace('#{programId}', programId)
+      NicoNico.ENDPOINTS.ACCEPT_WATCH_TS.replace('#{programId}', programId),
+      {},
+      {
+        validateStatus: () => true,
+      }
     )
 
-    if (response.status !== 200) {
-      throw new Error(
-        'useAcceptWatch failed (resCode: ' + response.status + ')'
-      )
+    if (response.data.meta.status === 403) {
+      console.log(response.data)
+      return false
     }
 
     // {"meta":{"status":200}}
     if (response.data.meta.status !== 200) {
-      throw new Error(
-        'useAcceptWatch failed (resCode: ' + response.data.meta.status + ')'
-      )
+      console.log(response.data)
+      return false
     }
+
+    return true
   }
 }
