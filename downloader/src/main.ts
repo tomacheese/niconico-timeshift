@@ -41,13 +41,17 @@ async function main() {
   // ダウンロード
   for (const item of downloadables) {
     const programId = item.programId
+    console.log('download: ' + programId)
     if (isDownloaded(programId)) {
       // ダウンロード済みならスキップ
       console.log('downloaded. skip: ' + programId)
       continue
     }
     // 視聴権利処理
-    await niconico.useAcceptWatch(programId)
+    if (!(await niconico.useAcceptWatch(programId))) {
+      console.log('useAcceptWatch failed. skip: ' + programId)
+      return
+    }
 
     const outputDir = '/data/' + programId + '/'
     const userSession = fs
