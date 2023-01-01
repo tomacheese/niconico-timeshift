@@ -49,12 +49,9 @@ async function main() {
     }
 
     // 視聴権利処理
-    /*
     if (!(await niconico.useAcceptWatch(programId))) {
-      console.log('useAcceptWatch failed. skip: ' + programId)
-      return
+      console.log('useAcceptWatch failed.')
     }
-    */
 
     const outputDir = '/data/' + programId + '/'
     const userSession = fs
