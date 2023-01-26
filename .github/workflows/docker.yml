@@ -36,7 +36,7 @@ env:
   TARGETS: >-
     [
       { imageName: "tomacheese/niconico-timeshift-register", context: "register", file: "register/Dockerfile", packageName: "niconico-timeshift-register" },
-      { imageName: "tomacheese/niconico-timeshift-downloader", context: "downloader", file: "downloader/Dockerfile", packageName: "niconico-timeshift-register" }
+      { imageName: "tomacheese/niconico-timeshift-downloader", context: "downloader", file: "downloader/Dockerfile", packageName: "niconico-timeshift-downloader" }
     ]
 
 concurrency:
