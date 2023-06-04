@@ -239,7 +239,7 @@ export default class NicoNico {
 
     const html = response.data
     const $ = cheerio.load(html)
-    const programList = $('ul[class^="___program-card-list___"]')
+    const programList = $('ul[class^="___program-card-list___"]:first')
     if (programList.length === 0) {
       throw new Error('searchLive failed (programList not found)')
     }
