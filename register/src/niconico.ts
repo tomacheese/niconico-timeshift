@@ -239,12 +239,15 @@ export default class NicoNico {
 
     const html = response.data
     const $ = cheerio.load(html)
-    const programList = $('.searchPage-ProgramList:first')
-    const programs = programList.find('.searchPage-ProgramList_Item')
+    const programList = $('ul[class^="___program-card-list___"]')
+    if (programList.length === 0) {
+      throw new Error('searchLive failed (programList not found)')
+    }
+    const programs = programList.find('li[class^="___program-card___"]')
     const items: SearchLiveItem[] = []
     for (const program of programs) {
       const statusLabelElement = $(program).find(
-        'div[class^=searchPage-ProgramList_StatusLabel]'
+        'div[class^="___status-label-"]'
       )
       const statusLabel = statusLabelElement.text() // LIVE | 放送予定 | タイムシフト | 公開終了
       const programType: ProgramType =
@@ -258,14 +261,16 @@ export default class NicoNico {
           ? 'CLOSED'
           : 'UNKNOWN'
       const thumbnailUrl = $(program)
-        .find('img.searchPage-ProgramList_Image')
+        .find('img[class^="___program-card-thumbnail-image___"]')
         .attr('src') as string
-      const titleElement = $(program).find('a.searchPage-ProgramList_TitleLink')
+      const titleElement = $(program).find(
+        'a[class^="___program-card-title-anchor___"]'
+      )
       const title = titleElement.text().trim()
       const url = titleElement.attr('href')
       const programId = url?.substring(url.lastIndexOf('/') + 1) as string
       const description = $(program)
-        .find('p.searchPage-ProgramList_Description')
+        .find('p[class^="___program-card-description___"]')
         .text()
         .trim()
 
@@ -283,8 +288,10 @@ export default class NicoNico {
       })
     }
 
-    const prev = $('a.searchPage-Pager_Item-prev').length > 0
-    const next = $('a.searchPage-Pager_Item-next').length > 0
+    const prev =
+      $('button[class^="___page-selector___"][data-name="prev"]').length > 0
+    const next =
+      $('button[class^="___page-selector___"][data-name="next"]').length > 0
 
     return {
       items,
@@ -301,7 +308,7 @@ export default class NicoNico {
     program: cheerio.Element
   ): LiveData {
     const dataElements = $(program).find(
-      'ul.searchPage-ProgramList_Data > li.searchPage-ProgramList_DataItem'
+      'ul[class^="___program-card-statistics___"] > li[class^="___program-card-statistics-item___"]'
     )
 
     let time: ProgramTime | null = null
@@ -309,11 +316,11 @@ export default class NicoNico {
     let comments: number | null = null
     let timeshift: number | null = null
 
-    const regex = /^searchPage-ProgramList_DataIcon-(.+)$/
+    const regex = /^___program-card-statistics-icon-(.+)___$/
     for (const dataElement of dataElements) {
       const element = $(dataElement)
       const iconElement = element.find(
-        'span[class^=searchPage-ProgramList_DataIcon]'
+        'span[class^="___program-card-statistics-icon-"]'
       )
       if (iconElement.length === 0) {
         time = type ? this.parseProgramTime(type, element.text().trim()) : null
@@ -393,14 +400,16 @@ export default class NicoNico {
     $: cheerio.Root,
     program: cheerio.Element
   ): NicoNicoUser {
-    const userElement = $(program).find('div.searchPage-ProgramList_User')
+    const userElement = $(program).find(
+      'div[class^="___program-card-provider___"]'
+    )
     const username = userElement
-      .find('p.searchPage-ProgramList_UserName')
+      .find('p[class^="___program-card-provider-name___"]')
       .text()
       .trim()
     const userUrl = userElement
       .find(
-        'p.searchPage-ProgramList_UserName > a.searchPage-ProgramList_UserNameLink'
+        'p[class^="___program-card-provider-name___"] > a[class^="___program-card-provider-name-link___"]'
       )
       .attr('href')
     if (!userUrl) {
@@ -408,7 +417,7 @@ export default class NicoNico {
     }
     const userId = userUrl.substring(userUrl.lastIndexOf('/') + 1)
     const iconUrl = userElement
-      .find('img.searchPage-ProgramList_UserImage')
+      .find('img[class^="___program-card-provider-icon-image___"]')
       .attr('src')
 
     if (!iconUrl) {

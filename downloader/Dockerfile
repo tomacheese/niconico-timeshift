@@ -4,7 +4,7 @@ RUN apk update && \
   apk upgrade && \
   apk add --no-cache git gcc musl-dev
 
-RUN git clone https://github.com/nnn-revo2012/livedl.git /work/livedl
+RUN git clone https://github.com/nnn-revo2012/livedl-forked.git /work/livedl
 
 WORKDIR /work/livedl/src
 RUN go build -o /work/livedl/livedl livedl.go
