@@ -103,6 +103,7 @@ async function main() {
     // 予約
     console.log(`title: ${item.title}`)
     console.log(`channel: ${item.user.username}`)
+    console.log(`searchWord: ${item.searchWord}`)
     console.log('reserve: ' + item.programId)
     const result = await niconico.reserveTimeshift(item.programId)
     if (!result.status) {
@@ -116,6 +117,10 @@ async function main() {
               {
                 name: 'チャンネル',
                 value: item.user.username,
+              },
+              {
+                name: '検索ワード',
+                value: item.searchWord,
               },
             ],
             thumbnail: {
@@ -219,7 +224,10 @@ async function getSearchLives(
       if (isReserved) {
         continue
       }
-      preReserved.push(item)
+      preReserved.push({
+        ...item,
+        searchWord: word,
+      })
     }
     // pagination必要に応じて対応
   }

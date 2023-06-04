@@ -18,6 +18,7 @@ export interface SearchLiveItem {
   thumbnailUrl: string
   data: LiveData
   user: NicoNicoUser
+  searchWord?: string
 }
 
 export default interface SearchLiveResult {
