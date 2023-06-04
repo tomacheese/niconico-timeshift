@@ -263,7 +263,9 @@ export default class NicoNico {
       const thumbnailUrl = $(program)
         .find('img[class^="___program-card-thumbnail-image___"]')
         .attr('src') as string
-      const titleElement = $(program).find('a[class^="___program-card-title-anchor___"]')
+      const titleElement = $(program).find(
+        'a[class^="___program-card-title-anchor___"]'
+      )
       const title = titleElement.text().trim()
       const url = titleElement.attr('href')
       const programId = url?.substring(url.lastIndexOf('/') + 1) as string
