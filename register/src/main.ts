@@ -62,6 +62,10 @@ async function main() {
         return true
       }
     }
+    if (!item.timeshiftSetting) {
+      // 公開終了の場合は削除
+      return true
+    }
     if (item.timeshiftSetting.status === 'CLOSED') {
       // タイムシフト終了済みの場合は削除
       return true
@@ -167,6 +171,9 @@ async function isExistsAfterReserve(
   item: SearchLiveItem
 ) {
   const afterReserves = reserveds.filter((reserve) => {
+    if (!reserve.timeshiftSetting) {
+      return false
+    }
     if (reserve.timeshiftSetting.status !== 'BEFORE_OPEN') {
       return false
     }

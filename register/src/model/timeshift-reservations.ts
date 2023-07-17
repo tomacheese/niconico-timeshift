@@ -454,7 +454,7 @@ export interface Reservation {
   socialGroup: SocialGroup
   statistics: Statistics
   thumbnail: Thumbnail
-  timeshiftSetting: TimeshiftSetting
+  timeshiftSetting?: TimeshiftSetting
   timeshiftTicket: TimeshiftTicket
 }
 
