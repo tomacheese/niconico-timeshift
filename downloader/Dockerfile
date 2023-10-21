@@ -11,7 +11,7 @@ RUN go build -o /work/livedl/livedl livedl.go
 
 # /work/livedl
 
-FROM node:20-alpine
+FROM node:21-alpine
 
 RUN apk update && \
   apk upgrade
